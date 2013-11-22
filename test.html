@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+<style>
+  html, body {
+    margin: 0;
+    background: #efefef;
+    overflow: hidden;
+    font-family: Helvetica, Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+    color: #222;
+    font-size: 13px;
+  }
+  canvas {
+    opacity: 1;
+    position: absolute;
+    top: 0;
+    left; 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+</style>
+<title>Path.js Test</title>
+</head>
+
+<body>
+
+<script src="./Path.js"></script>
+
+<script>
+  
+  var data = [];
+  var x, y, z, t;
+  for (var i = 0; i < 100; i++) {
+    x = Math.round( Math.random() * 1000 );
+    y = Math.round( Math.random() * 1000 );
+    z = Math.round( Math.random() * 1000 );
+    // x = Math.random() * 1000;
+    // y = Math.random() * 1000;
+    // z = Math.random() * 1000;
+    
+    if (i < 50) {
+      t = i * 10;
+    } else {
+      t = i * 20;
+    }
+    
+    console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
+
+    data.push( new Point(x, y, z, t) );
+  }
+
+  var path = new Path(data);
+  console.log(path);
+
+</script>
+
+</body>
+
+</html>
