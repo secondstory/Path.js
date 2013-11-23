@@ -7,28 +7,28 @@ I started to develop this tool because I needed to capture Leap Motion data and 
 
 ```javascript
 var data = [];
-  var x, y, z, t;
-  for (var i = 0; i < 100; i++) {
-    x = Math.round( Math.random() * 1000 );
-    y = Math.round( Math.random() * 1000 );
-    z = Math.round( Math.random() * 1000 );
-    // x = Math.random() * 1000;
-    // y = Math.random() * 1000;
-    // z = Math.random() * 1000;
-    
-    if (i < 50) {
-      t = i * 10;
-    } else {
-      t = i * 20;
-    }
-    
-    console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
-
-    data.push( new Point(x, y, z, t) );
-  }
-
-  var path = new Path(data);
+var x, y, z, t;
+for (var i = 0; i < 100; i++) {
+  x = Math.round( Math.random() * 1000 );
+  y = Math.round( Math.random() * 1000 );
+  z = Math.round( Math.random() * 1000 );
+  // x = Math.random() * 1000;
+  // y = Math.random() * 1000;
+  // z = Math.random() * 1000;
   
-  console.log("t = 200.1", path.getXYZ(200.1) );
-  console.log("t = 1013.3", path.getXYZ(1013.3) );
+  if (i < 50) {
+    t = i * 10;
+  } else {
+    t = i * 20;
+  }
+  
+  console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
+
+  data.push( new Point(x, y, z, t) );
+}
+
+var path = new Path(data);
+
+console.log("t = 200.1", path.getXYZ(200.1) );
+console.log("t = 1013.3", path.getXYZ(1013.3) );
 ```

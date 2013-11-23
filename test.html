@@ -14,6 +14,8 @@
   }
   #circle {
     position: absolute;
+    left: 0; top : 0;
+    padding: 10px;
     width: 50px;
     height: 50px;
     background: #fff;
@@ -32,9 +34,9 @@
   var data = [];
   var x, y, z, t;
   for (var i = 0; i < 100; i++) {
-    x = Math.round( Math.random() * 1000 );
-    y = Math.round( Math.random() * 1000 );
-    z = Math.round( Math.random() * 1000 );
+    x = Math.round( Math.random() * 400 );
+    y = Math.round( Math.random() * 400 );
+    z = Math.round( Math.random() * 100 );
     
     t = i * 20;
     
@@ -53,15 +55,22 @@
                            window.webkitRequestAnimationFrame || 
                            window.msRequestAnimationFrame;
 
-  var time = 0.1, inc = 0.2;
+  var time = 0, inc = 1;
   var d = document.getElementById("circle");
 
   function step (timestamp) {
 
     var point = path.getXYZ(time);
-    console.log("t: ", time, point);
-    d.style.left    = point.x; // x
-    d.style.top     = point.y; // y
+    // console.log("t: ", time, point);
+    if (point.x == 0 && point.y == 0 && point.z == 0) {
+      console.log("t: ", time, point);
+      return;
+    }
+    d.style.left    = point.x + "px"; // x
+    d.style.top     = point.y + "px"; // y
+    d.style.width   = point.z + "px";
+    d.style.height  = point.z + "px";
+    // d.innerHTML = point.x;
     // d.style.width   = point.z; // z
     // d.style.height  = point.z;
     
@@ -71,8 +80,8 @@
     }
   }
 
-  // requestAnimationFrame(step);
-
+  requestAnimationFrame(step);
+  
 </script>
 
 </body>
