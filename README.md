@@ -1,15 +1,34 @@
 Linear Fit JS
 =======
 
-Turn a collection of time stamped 3D coordinates into a continous path that has linfinite resolution as a function of time.
+Turn a collection of time stamped 3D coordinates into a continous path that has infinite resolution as a function of time.
 
-I started to develop this tool because I needed to capture Leap Motion data and animate long the path drawn with the same timing used to record. There are other uses for this library in real time data analysis.
+I started to develop this tool because I needed to capture Leap Motion data and animate long the path drawn with the same timing used to record.
 
-var path = new Path([{t : 0, x : #, y : #, z : #}, {t : #, x : #, y : #, z : #}, ... ]); // t in ms, x, y, z floating point numbers
+```javascript
+var data = [];
+  var x, y, z, t;
+  for (var i = 0; i < 100; i++) {
+    x = Math.round( Math.random() * 1000 );
+    y = Math.round( Math.random() * 1000 );
+    z = Math.round( Math.random() * 1000 );
+    // x = Math.random() * 1000;
+    // y = Math.random() * 1000;
+    // z = Math.random() * 1000;
+    
+    if (i < 50) {
+      t = i * 10;
+    } else {
+      t = i * 20;
+    }
+    
+    console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
 
-var time = #; //ms
-var vector = path.getVector(time);
+    data.push( new Point(x, y, z, t) );
+  }
 
-console.log(vector.x);
-console.log(vector.y);
-console.log(vector.z);
+  var path = new Path(data);
+  
+  console.log("t = 200.1", path.getXYZ(200.1) );
+  console.log("t = 1013.3", path.getXYZ(1013.3) );
+```
