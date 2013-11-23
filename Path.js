@@ -1,11 +1,12 @@
 
 
-var Point = function (x, y, z, t) {
+var Point = function (x, y, z, t, prevPoint) {
 
-  this.x = x || 0;
-  this.y = y || 0;
-  this.z = z || 0;
-  this.t = t || 0;
+  this.x             = x || 0;
+  this.y             = y || 0;
+  this.z             = z || 0;
+  this.t             = t || 0;
+  this.previousPoint = prevPoint || null;
 };
 
 var Path = function (data) {
@@ -16,7 +17,7 @@ var Path = function (data) {
     this.pools.push( [] );
   }
 
-  // find max time
+  // find min & max time
   var minTime = 0;
   var maxTime = 0;
   var point;
@@ -29,14 +30,18 @@ var Path = function (data) {
       minTime = point.t; 
     }
   }
-  console.log("minTime: ", minTime); // should be 0
-  console.log("maxTime: ", maxTime);
-  this.maxTime = maxTime;
 
+  this.maxTime = maxTime;
   this.deltaT = Math.round( maxTime / poolsize );
   
+  var previousPoint;
+
   for (var k in data) {
     point = data[k];
+
+    if ( previousPoint ) {
+      point.previousPoint = previousPoint;
+    }
 
     if (point.t == 0) {
 
@@ -50,6 +55,7 @@ var Path = function (data) {
 
       this.pools[ Math.floor( (point.t) / this.deltaT ) ].push(point);
     }
+    previousPoint = point;
   }
   
 
@@ -57,22 +63,49 @@ var Path = function (data) {
 
 Path.prototype.getXYZ = function (t) {
 
-  if (t > this.maxTime) {
+  if (typeof t !== "number" || t > this.maxTime) {
+    console.log("error - Path.prototype.getXYZ - t specified is invalid");
     return null;
   }
   
   var poolIndex = 0;
 
-  if (point.t == 0 ) {
+  if (t == 0 ) {
 
     poolIndex = 0;
 
-  } else if (point.t == this.maxTime) {
+  } else if (t == this.maxTime) {
 
     poolIndex = this.pools.length - 1;
 
   } else {
 
-    poolIndex = Math.floor( (point.t) / this.deltaT );
+    poolIndex = Math.floor( t / this.deltaT );
   }
+
+  var pool = this.pools[poolIndex];
+
+  var x = null, y = null, z = null;
+
+  for (var i in pool) {
+    
+    var point = pool[i];
+
+    if (point.t > t) {
+
+      x = ( (point.x - point.previousPoint.x) / (point.t - point.previousPoint.t)) * (t - point.previousPoint.t) + point.previousPoint.x;
+      y = ( (point.y - point.previousPoint.y) / (point.t - point.previousPoint.t)) * (t - point.previousPoint.t) + point.previousPoint.y;
+      z = ( (point.z - point.previousPoint.z) / (point.t - point.previousPoint.t)) * (t - point.previousPoint.t) + point.previousPoint.z;
+      break;
+
+    } else if (point.t === t) {
+
+      x = point.x;
+      y = point.y;
+      z = point.z;
+      break;
+    }
+  }
+  return {x : Math.round(x), y : Math.round(y), z : Math.round(z)};
+
 };
