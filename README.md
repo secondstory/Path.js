@@ -1,4 +1,4 @@
-Linear Fit JS
+Path.js
 =======
 
 Turn a collection of time stamped 3D coordinates into a continous path that has infinite resolution as a function of time.
@@ -12,10 +12,8 @@ for (var i = 0; i < 100; i++) {
   x = Math.round( Math.random() * 1000 );
   y = Math.round( Math.random() * 1000 );
   z = Math.round( Math.random() * 1000 );
-  // x = Math.random() * 1000;
-  // y = Math.random() * 1000;
-  // z = Math.random() * 1000;
-  
+
+  // will work with uneven time stamping
   if (i < 50) {
     t = i * 10;
   } else {

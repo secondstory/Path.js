@@ -33,20 +33,22 @@
   
   var data = [];
   var x, y, z, t;
-  for (var i = 0; i < 100; i++) {
+  for (var i = 0; i < 1000; i++) {
     x = Math.round( Math.random() * 400 );
     y = Math.round( Math.random() * 400 );
     z = Math.round( Math.random() * 100 );
     
     t = i * 20;
     
-    console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
+    // console.log("x: ", x, "y: ", y, "z: ", z, "t: ", t);
 
     data.push( new Point(x, y, z, t) );
   }
+  var timer = Date.now();
 
   var path = new Path(data);
   
+  console.log("To create a path with", data.length, "points it takes", (Date.now() - timer), "ms.");
   // console.log("t = 200.1", path.getXYZ(200.1) );
   // console.log("t = 1013.1", path.getXYZ(1013.1) );
 
@@ -55,7 +57,7 @@
                            window.webkitRequestAnimationFrame || 
                            window.msRequestAnimationFrame;
 
-  var time = 0, inc = 1;
+  var time = 0, inc = 4;
   var d = document.getElementById("circle");
 
   function step (timestamp) {
@@ -63,16 +65,13 @@
     var point = path.getXYZ(time);
     // console.log("t: ", time, point);
     if (point.x == 0 && point.y == 0 && point.z == 0) {
-      console.log("t: ", time, point);
+      console.log("error @ time = ", time, point);
       return;
     }
-    d.style.left    = point.x + "px"; // x
-    d.style.top     = point.y + "px"; // y
+    d.style.left    = point.x + "px";
+    d.style.top     = point.y + "px";
     d.style.width   = point.z + "px";
     d.style.height  = point.z + "px";
-    // d.innerHTML = point.x;
-    // d.style.width   = point.z; // z
-    // d.style.height  = point.z;
     
     time += inc;
     if (time < path.maxTime) {

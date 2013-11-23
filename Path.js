@@ -13,7 +13,7 @@ var Path = function (data) {
 
   this.pools = [];
 
-  poolsize = Math.floor ( data.length / 10 );
+  var poolsize = Math.floor ( data.length / 10 );
   
   for (var i = 0; i < poolsize; i++) {
     this.pools.push( [] );
@@ -85,7 +85,6 @@ Path.prototype.getXYZ = function (t) {
     poolIndex = Math.floor( t / this.deltaT );
   }
 
-
   var x = null, y = null, z = null;
 
   do {
@@ -116,7 +115,7 @@ Path.prototype.getXYZ = function (t) {
       }
     }
     poolIndex ++;
-    
+
   } while(x == null && y == null & z == null);
 
   return {x : Math.round(x), y : Math.round(y), z : Math.round(z)};
