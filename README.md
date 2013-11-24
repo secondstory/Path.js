@@ -3,8 +3,6 @@ Path.js
 
 Turn a collection of time stamped 3D coordinates into a continous path that has infinite resolution as a function of time.
 
-I started to develop this tool because I needed to capture Leap Motion data and animate long the path drawn with the same timing used to record.
-
 [Example](http://whoami.hp.af.cm/Linear_Fit_JS/test_record_mouse.html)
 
 ```javascript
