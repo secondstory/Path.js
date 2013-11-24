@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+<style>
+  html, body {
+    margin: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  #container {
+    position: absolute;
+    left: 0; top : 0;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: #333;
+  }
+  .Circle {
+    position: absolute;
+    width: 30px; height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 30px;
+    background: #ff3300;
+  }
+
+</style>
+<title>Path.js Test</title>
+</head>
+
+<body>
+<div id="container"></div>
+<script src="./Path.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script>
+  
+  $(document).ready (function () {
+
+    var $container = $("#container");
+    var data = [];
+    var time = 0;
+    var path;
+
+    $container.mousedown(function (e) {
+
+      data = [];
+      time = Date.now();
+      data.push( new Point (e.pageX, e.pageY, 0, 0));
+    });
+    $container.mousemove(function (e) {
+
+      if (e.which == 0) {
+        return;
+      }
+      data.push( new Point (e.pageX, e.pageY, 0, Date.now() - time));
+    });
+
+    $container.mouseup(function (e) {
+
+      data.push( new Point (e.pageX, e.pageY, 0, Date.now() - time));
+      path = new Path(data);
+      new FollowPath(path, $container);
+    });
+    
+    window.requestAnimationFrame = window.requestAnimationFrame || 
+                                window.mozRequestAnimationFrame ||
+                             window.webkitRequestAnimationFrame || 
+                             window.msRequestAnimationFrame;
+
+    var time = 0, inc = 4;
+    var d = document.getElementById("circle");
+
+    var FollowPath = function (path, parent) {
+
+      this.$el = $("<div class='Circle'></div>")
+      parent.append(this.$el);
+      this.time = 0;
+      this.path = path;
+
+      this.inc = 10;
+      var that = this;
+
+      var loop = function () {
+
+        var point = that.path.getXYZ(that.time);
+        
+        if (point.x == 0 && point.y == 0 && point.z == 0) {
+          console.log("error @ time = ", that.time, point);
+          return;
+        }
+
+        that.$el.css({top : point.y, left : point.x});
+
+        that.time += that.inc;
+
+        if (that.time < that.path.maxTime) {
+          requestAnimationFrame(loop);
+        }
+      };
+
+      requestAnimationFrame(loop);
+    }
+
+  });  
+  
+</script>
+
+</body>
+
+</html>
