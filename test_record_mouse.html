@@ -4,18 +4,25 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
 <style>
+
   html, body {
     margin: 0;
     overflow: hidden;
+    max-width:100%;
+    max-height:100%;
     width: 100%;
     height: 100%;
+    overflow:hidden;
+    background: #000;
   }
   #container {
     position: absolute;
     left: 0; top : 0;
     margin: 0; padding: 0;
     width: 100%; height: 100%;
-    background: #333;
+    max-width:100%;
+    max-height:100%;
+    background: #DDD;
   }
   .Circle {
     position: absolute;
@@ -25,9 +32,14 @@
     border-radius: 60px;
     background: #ff3300;
   }
+  p {
+    color :#666;
+  }
 
 </style>
 <title>Path.js Test</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+<meta name="viewport" content="width=device-width" />
 </head>
 
 <body>
@@ -36,39 +48,91 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <script>
-  
+
   $(document).ready (function () {
 
     var $container = $("#container");
+    $container.css({width : $(document).width(), height : $(document).height()});
     var data = [];
     var time = 0;
     var path;
 
-    $container.mousedown(function (e) {
-
+    var start = function (x, y) {
       data = [];
       time = Date.now();
-      data.push( new Point (e.pageX, e.pageY, 0, 0));
+      data.push( new Point (x, y, 0, 0));
+    };
+    var move  = function (x, y) {
+
+      data.push( new Point (x, y, 0, Date.now() - time));
+    };
+    var end   = function (x, y) {
+
+      data.push( new Point (x, y, 0, Date.now() - time));
+      path = new Path(data);
+      new FollowPath(path, $container);
+    };
+
+    $container.mousedown(function (e) {
+
+      start(e.pageX, e.pageY);
     });
+
     $container.mousemove(function (e) {
 
       if (e.which == 0) {
         return;
       }
-      data.push( new Point (e.pageX, e.pageY, 0, Date.now() - time));
+      move (e.pageX, e.pageY);
     });
 
     $container.mouseup(function (e) {
 
-      data.push( new Point (e.pageX, e.pageY, 0, Date.now() - time));
-      path = new Path(data);
-      new FollowPath(path, $container);
+      end (e.pageX, e.pageY);
     });
     
-    window.requestAnimationFrame = window.requestAnimationFrame || 
-                                window.mozRequestAnimationFrame ||
-                             window.webkitRequestAnimationFrame || 
-                             window.msRequestAnimationFrame;
+    window.document.addEventListener('touchstart', function(e) {
+
+      e.preventDefault();
+      var touch = e.touches[0];
+      // console.log("Touch x:", touch.pageX, "y:", touch.pageY);
+      start(touch.pageX, touch.pageY);
+    }, false);
+    
+    window.document.addEventListener('touchmove', function(e) {
+      
+      e.preventDefault();
+      var touch = e.touches[0];
+      // console.log("Touch x:", touch.pageX, "y:", touch.pageY);
+      // $container.append("<p>"+touch.pageX+"<p>");
+      move(touch.pageX, touch.pageY);
+    }, false);
+
+    window.document.addEventListener('touchend', function(e) {
+      
+      e.preventDefault();
+      var touch = e.changedTouches[0];
+      // console.log("Touch x:", touch.pageX, "y:", touch.pageY);
+      end(touch.pageX, touch.pageY);
+    }, false);
+
+    if ( !window.requestAnimationFrame ) {
+ 
+    window.requestAnimationFrame = ( function() {
+   
+        return window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+     
+          window.setTimeout( callback, 1000 / 60 );
+     
+        };
+     
+      } )();
+     
+    }
 
     var time = 0, inc = 4;
     var d = document.getElementById("circle");
@@ -85,8 +149,14 @@
 
     var FollowPath = function (path, parent) {
 
-      this.$el = $("<div class='Circle'></div>").css({background : random_color()});
+      var init = path.getXYZ(0);
+      this.$el = $("<div class='Circle'></div>")
+                     .css({background : random_color(), 
+                           left : init.x,
+                            top : init.y });
+      
       parent.append(this.$el);
+      this.parent = parent;
       this.time = 0;
       this.path = path;
       this.forward = true;
@@ -102,7 +172,7 @@
           console.log("error @ time = ", that.time, "path max timestamp =", that.path.maxTime);
           return;
         }
-
+        
         that.$el.css({top : point.y, left : point.x});
 
         if (that.forward) {
@@ -125,7 +195,7 @@
       };
 
       requestAnimationFrame(loop);
-    }
+    };
 
   });  
   
