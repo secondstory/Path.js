@@ -34,7 +34,7 @@ var Path = function (data) {
   }
 
   this.maxTime = maxTime;
-  this.deltaT = Math.round( maxTime / poolsize );
+  this.deltaT = Math.ceil( maxTime / poolsize );
   
   var previousPoint;
 
@@ -106,7 +106,7 @@ Path.prototype.getXYZ = function (t) {
         z = ( (point.z - point.previousPoint.z) / (point.t - point.previousPoint.t)) * (t - point.previousPoint.t) + point.previousPoint.z;
         break;
 
-      } else if (point.t === t) {
+      } else if (point.t == t) {
 
         x = point.x;
         y = point.y;
@@ -117,7 +117,7 @@ Path.prototype.getXYZ = function (t) {
     poolIndex ++;
 
   } while(x == null && y == null & z == null);
-
+  
   return {x : Math.round(x), y : Math.round(y), z : Math.round(z)};
 
 };

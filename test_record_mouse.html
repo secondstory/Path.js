@@ -19,9 +19,10 @@
   }
   .Circle {
     position: absolute;
-    width: 30px; height: 30px;
-    margin: -15px 0 0 -15px;
-    border-radius: 30px;
+    opacity: 0.5;
+    width: 60px; height: 60px;
+    margin: -30px 0 0 -30px;
+    border-radius: 60px;
     background: #ff3300;
   }
 
@@ -72,14 +73,25 @@
     var time = 0, inc = 4;
     var d = document.getElementById("circle");
 
+    var random_color = function () {
+        
+      var rint = Math.round(0xffffff * Math.random());
+      var reply = '#' + rint.toString(16).replace(/^#0([0-9a-f]{6})$/i, '#$1'); 
+      if (reply.length == 6) {
+        reply += "9";
+      } 
+      return reply;
+    };
+
     var FollowPath = function (path, parent) {
 
-      this.$el = $("<div class='Circle'></div>")
+      this.$el = $("<div class='Circle'></div>").css({background : random_color()});
       parent.append(this.$el);
       this.time = 0;
       this.path = path;
+      this.forward = true;
+      this.inc = Math.round(Math.random() * 10) + 0.5;
 
-      this.inc = 10;
       var that = this;
 
       var loop = function () {
@@ -87,17 +99,29 @@
         var point = that.path.getXYZ(that.time);
         
         if (point.x == 0 && point.y == 0 && point.z == 0) {
-          console.log("error @ time = ", that.time, point);
+          console.log("error @ time = ", that.time, "path max timestamp =", that.path.maxTime);
           return;
         }
 
         that.$el.css({top : point.y, left : point.x});
 
-        that.time += that.inc;
-
-        if (that.time < that.path.maxTime) {
-          requestAnimationFrame(loop);
+        if (that.forward) {
+          that.time += that.inc;   
+        } else {
+          that.time -= that.inc;
         }
+       
+        if (that.time > that.path.maxTime) {
+          
+          that.forward = false;
+          that.time = that.path.maxTime;
+
+        } else if (that.time < 0) {
+          
+          that.forward = true;
+          that.time = 0;
+        }
+        requestAnimationFrame(loop);
       };
 
       requestAnimationFrame(loop);
