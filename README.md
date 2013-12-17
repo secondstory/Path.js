@@ -3,7 +3,7 @@ Path.js
 
 Turn a collection of time stamped 3D coordinates into a continuous path that has infinite resolution as a function of time.
 
-[Example](http://whoami.hp.af.cm/Linear_Fit_JS/test_record_mouse.html)
+## [Example](http://whoami.hp.af.cm/Linear_Fit_JS/test_record_mouse.html)
 
 ```javascript
 var data = [];
@@ -30,3 +30,10 @@ var path = new Path(data);
 console.log("t = 200.1", path.getXYZ(200.1) );
 console.log("t = 1013.3", path.getXYZ(1013.3) );
 ```
+
+---
+
+###### [Copyright (c) 2013 - Second Story](http://www.secondstory.com)
+###### This code is licensed under the MIT License. 
+###### For more information visit  : https://github.com/secondstory/Path.js
+ 
